@@ -17,9 +17,12 @@ In this project, the group was tasked to develop a dynamic website for an NGO/ba
 
 **Client:** React, Vite, TailwindCSS
 
-**Server:** Node.js, MySQL
+**Backend:** Node.js, Express
+
+**Database:** MongoDB
 
 **Hosting:** Vercel
+
 ## Acknowledgements
 
 A big thank you to the POC Cat Club for letting us create a website for them! Support their page here:
