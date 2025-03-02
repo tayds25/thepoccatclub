@@ -4,6 +4,7 @@
 This project is developed as part of our Web Systems and Technologies 2 (ITS122L) Course.
 
 In this project, the group was tasked to develop a dynamic website for an NGO/barangay/government/community of your choice. In this case, the group has created a website for The POC Cat Club, a non-profit organization that helps cats find their forever homes.
+
 ## Creators
 
 - Alpas, John Rafael D.
@@ -22,6 +23,7 @@ In this project, the group was tasked to develop a dynamic website for an NGO/ba
 **Database:** MongoDB
 
 **Hosting:** Vercel
+
 
 ## Acknowledgements
 

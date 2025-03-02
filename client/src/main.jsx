@@ -14,7 +14,6 @@ import Support from "./pages/support.jsx";
 import Latest from "./pages/latest.jsx";
 import About from "./pages/about.jsx";
 import Account from "./pages/account.jsx";
-import Register from "./pages/register.jsx";
 
 // Admin Controls
 import Record from "./admin_pages/record.jsx";
@@ -49,10 +48,6 @@ const router = createBrowserRouter([
       {
         path: "account",
         element: <Account />,
-      },
-      {
-        path: "register",
-        element: <Register />,
       },
       {
         path: "records",
