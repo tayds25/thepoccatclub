@@ -53,37 +53,37 @@ function Adopt() {
                 {/* Grid of adoptable cats */}
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-flow-row gap-4">
                     {cats.length > 0 ? (
-                        cats.map((cat) => (
-                            <div key={cat._id} className="flex flex-col bg-gray-900 p-4 rounded-lg text-white shadow-lg">
-                                {/* Cat Image */}
-                                {cat.image ? (
+                        cats.map((cat) => {
+                            const imageUrl = cat.image ? `http://localhost:5050/uploads/${encodeURIComponent(cat.image)}` : "/placeholder.jpg"; // Fetching image from /images/:filename
+
+                            return (
+                                <div key={cat._id} className="flex flex-col bg-gray-900 p-4 rounded-lg text-white shadow-lg">
+                                    {/* Cat Image */}
                                     <img 
-                                        src={`http://localhost:5050/images/${cat.image}`}  // ✅ Use the new image route
+                                        src={imageUrl} 
                                         alt={cat.name} 
                                         className="w-full h-48 object-cover rounded-md"
                                         onError={(e) => { e.target.src = "/placeholder.jpg"; }} // Fallback if image not found
                                     />
-                                ) : (
-                                    <div className="w-full h-48 bg-gray-700 flex items-center justify-center">No Image</div>
-                                )}
-                                
-                                {/* Cat Details */}
-                                <div className="mt-4">
-                                    <h3 className="text-xl font-semibold">{cat.name}</h3>
-                                    <p className="text-sm">Age: {cat.age} months</p>
-                                    <p className="text-sm">Gender: {cat.gender}</p>
-                                    <p className="text-sm">Trait: {cat.trait}</p>
-                                </div>
+                                    
+                                    {/* Cat Details */}
+                                    <div className="mt-4">
+                                        <h3 className="text-xl font-semibold">{cat.name}</h3>
+                                        <p className="text-sm">Age: {cat.age} months</p>
+                                        <p className="text-sm">Gender: {cat.gender}</p>
+                                        <p className="text-sm">Trait: {cat.trait}</p>
+                                    </div>
 
-                                {/* Health Badges */}
-                                <div className="mt-2 flex flex-wrap gap-2">
-                                    {cat.trained && <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">Trained</span>}
-                                    {cat.neutered && <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">Neutered</span>}
-                                    {cat.dewormed && <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">Dewormed</span>}
-                                    {cat.vaccinated && <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">Vaccinated</span>}
+                                    {/* Health Badges */}
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        {cat.trained && <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">Trained</span>}
+                                        {cat.neutered && <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">Neutered</span>}
+                                        {cat.dewormed && <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">Dewormed</span>}
+                                        {cat.vaccinated && <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">Vaccinated</span>}
+                                    </div>
                                 </div>
-                            </div>
-                        ))
+                            );
+                        })
                     ) : (
                         <p className="text-center col-span-3 text-gray-500">No cats available for adoption at the moment.</p>
                     )}

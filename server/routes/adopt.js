@@ -8,9 +8,9 @@ import { ObjectId } from "mongodb";
 const router = express.Router();
 
 // Ensure uploads directory exists
-const uploadDir = path.join("uploads/");
+const uploadDir = "uploads/";
 if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+    fs.mkdirSync(uploadDir);
 }
 
 // Configure multer storage for images
@@ -26,6 +26,18 @@ const upload = multer({ storage });
 // Reference the `cats` collection in the `adopt` database
 const collection = adoptsDb.collection("cats");
 
+// Route to serve uploaded images
+router.get("/images/:filename", (req, res) => {
+    const { filename } = req.params;
+    const imagePath = path.join(process.cwd(), "uploads", filename);
+
+    if (!fs.existsSync(imagePath)) {
+        return res.status(404).send("Image not found");
+    }
+
+    res.sendFile(imagePath);
+});
+
 // Get all adoptable cats
 router.get("/", async (req, res) => {
     try {
@@ -33,7 +45,7 @@ router.get("/", async (req, res) => {
         res.status(200).json(results);
     } catch (err) {
         console.error("Error fetching cats:", err);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).send("Internal Server Error");
     }
 });
 
@@ -44,24 +56,13 @@ router.get("/:id", async (req, res) => {
         let result = await collection.findOne(query);
 
         if (!result) {
-            return res.status(404).json({ message: "Cat not found" });
+            return res.status(404).send("Cat not found");
         }
         res.status(200).json(result);
     } catch (err) {
         console.error("Error fetching cat record:", err);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).send("Internal Server Error");
     }
-});
-
-// Serve cat images
-router.get("/images/:filename", (req, res) => {
-    const { filename } = req.params;
-    const imagePath = path.join(uploadDir, filename);
-    if (!fs.existsSync(imagePath)) {
-        return res.status(404).json({ message: "Image not found" });
-    }
-
-    res.sendFile(imagePath, { root: path.resolve() });
 });
 
 // Add a new cat for adoption (with image upload)
@@ -69,7 +70,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     try {
         let newCat = {
             name: req.body.name,
-            age: parseInt(req.body.age, 10) || 0,
+            age: req.body.age,
             trait: req.body.trait,
             gender: req.body.gender || "Unknown",
             trained: req.body.trained === "true" || req.body.trained === true,
@@ -80,10 +81,10 @@ router.post("/", upload.single("image"), async (req, res) => {
         };
 
         let result = await collection.insertOne(newCat);
-        res.status(201).json({ message: "Cat added successfully", cat: result });
+        res.status(201).json(result);
     } catch (err) {
         console.error("Error adding new cat:", err);
-        res.status(500).json({ message: "Error adding cat" });
+        res.status(500).send("Error adding cat");
     }
 });
 
@@ -94,7 +95,7 @@ router.patch("/:id", upload.single("image"), async (req, res) => {
         const updates = {
             $set: {
                 name: req.body.name,
-                age: parseInt(req.body.age, 10) || 0,
+                age: req.body.age,
                 trait: req.body.trait,
                 gender: req.body.gender || "Unknown",
                 trained: req.body.trained === "true" || req.body.trained === true,
@@ -111,12 +112,12 @@ router.patch("/:id", upload.single("image"), async (req, res) => {
         let result = await collection.updateOne(query, updates);
 
         if (result.matchedCount === 0) {
-            return res.status(404).json({ message: "Cat not found" });
+            return res.status(404).send("Cat not found");
         }
-        res.status(200).json({ message: "Cat updated successfully" });
+        res.status(200).json(result);
     } catch (err) {
         console.error("Error updating cat record:", err);
-        res.status(500).json({ message: "Error updating cat" });
+        res.status(500).send("Error updating cat");
     }
 });
 
@@ -127,12 +128,12 @@ router.delete("/:id", async (req, res) => {
         let result = await collection.deleteOne(query);
 
         if (result.deletedCount === 0) {
-            return res.status(404).json({ message: "Cat not found" });
+            return res.status(404).send("Cat not found");
         }
-        res.status(200).json({ message: "Cat deleted successfully" });
+        res.status(200).json(result);
     } catch (err) {
         console.error("Error deleting cat record:", err);
-        res.status(500).json({ message: "Error deleting cat" });
+        res.status(500).send("Error deleting cat");
     }
 });
 
