@@ -8,8 +8,8 @@ const AdoptMe = (props) => (
         <td className="p-4 align-middle">
             {props.adopt.image && (
                 <img 
-                    src={`http://localhost:5050/uploads/${props.adopt.image}`} 
-                    alt="Cat" 
+                    src={`http://localhost:5050/images/${props.adopt.image}`} 
+                    alt={props.adopt.name} 
                     className="h-20 w-20 object-cover rounded"
                 />
             )}
@@ -25,18 +25,10 @@ const AdoptMe = (props) => (
         {/* Cat Health Details */}
         <td className="p-4 align-middle">
             <div className="flex gap-2">
-                <span className={`px-2 py-1 rounded ${props.adopt.trained ? "bg-green-500 text-white" : "bg-gray-300"}`}>
-                    Trained
-                </span>
-                <span className={`px-2 py-1 rounded ${props.adopt.neutered ? "bg-green-500 text-white" : "bg-gray-300"}`}>
-                    Neutered
-                </span>
-                <span className={`px-2 py-1 rounded ${props.adopt.dewormed ? "bg-green-500 text-white" : "bg-gray-300"}`}>
-                    Dewormed
-                </span>
-                <span className={`px-2 py-1 rounded ${props.adopt.vaccinated ? "bg-green-500 text-white" : "bg-gray-300"}`}>
-                    Vaccinated
-                </span>
+                {props.adopt.trained && <span className="bg-green-500 text-white px-2 py-1 rounded">Trained</span>}
+                {props.adopt.neutered && <span className="bg-green-500 text-white px-2 py-1 rounded">Neutered</span>}
+                {props.adopt.dewormed && <span className="bg-green-500 text-white px-2 py-1 rounded">Dewormed</span>}
+                {props.adopt.vaccinated && <span className="bg-green-500 text-white px-2 py-1 rounded">Vaccinated</span>}
             </div>
         </td>
         {/* Edit & Delete Actions */}
@@ -44,7 +36,7 @@ const AdoptMe = (props) => (
             <div className="flex gap-2">
                 <Link
                     className="inline-flex items-center justify-center text-sm font-medium border border-input bg-background hover:bg-slate-100 h-9 rounded-md px-3"
-                    to={`/adoptme/${props.adopt._id}`}
+                    to={`/edit/${props.adopt._id}`}
                 >
                     Edit
                 </Link>

@@ -8,9 +8,9 @@ import { ObjectId } from "mongodb";
 const router = express.Router();
 
 // Ensure uploads directory exists
-const uploadDir = "uploads/";
+const uploadDir = path.join("uploads/");
 if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
+    fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 // Configure multer storage for images
@@ -30,10 +30,10 @@ const collection = adoptsDb.collection("cats");
 router.get("/", async (req, res) => {
     try {
         let results = await collection.find({}).toArray();
-        res.status(200).send(results);
+        res.status(200).json(results);
     } catch (err) {
         console.error("Error fetching cats:", err);
-        res.status(500).send("Internal Server Error");
+        res.status(500).json({ message: "Internal Server Error" });
     }
 });
 
@@ -44,13 +44,24 @@ router.get("/:id", async (req, res) => {
         let result = await collection.findOne(query);
 
         if (!result) {
-            return res.status(404).send("Cat not found");
+            return res.status(404).json({ message: "Cat not found" });
         }
-        res.status(200).send(result);
+        res.status(200).json(result);
     } catch (err) {
         console.error("Error fetching cat record:", err);
-        res.status(500).send("Internal Server Error");
+        res.status(500).json({ message: "Internal Server Error" });
     }
+});
+
+// Serve cat images
+router.get("/images/:filename", (req, res) => {
+    const { filename } = req.params;
+    const imagePath = path.join(uploadDir, filename);
+    if (!fs.existsSync(imagePath)) {
+        return res.status(404).json({ message: "Image not found" });
+    }
+
+    res.sendFile(imagePath, { root: path.resolve() });
 });
 
 // Add a new cat for adoption (with image upload)
@@ -58,7 +69,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     try {
         let newCat = {
             name: req.body.name,
-            age: req.body.age,
+            age: parseInt(req.body.age, 10) || 0,
             trait: req.body.trait,
             gender: req.body.gender || "Unknown",
             trained: req.body.trained === "true" || req.body.trained === true,
@@ -69,10 +80,10 @@ router.post("/", upload.single("image"), async (req, res) => {
         };
 
         let result = await collection.insertOne(newCat);
-        res.status(201).send(result);
+        res.status(201).json({ message: "Cat added successfully", cat: result });
     } catch (err) {
         console.error("Error adding new cat:", err);
-        res.status(500).send("Error adding cat");
+        res.status(500).json({ message: "Error adding cat" });
     }
 });
 
@@ -83,7 +94,7 @@ router.patch("/:id", upload.single("image"), async (req, res) => {
         const updates = {
             $set: {
                 name: req.body.name,
-                age: req.body.age,
+                age: parseInt(req.body.age, 10) || 0,
                 trait: req.body.trait,
                 gender: req.body.gender || "Unknown",
                 trained: req.body.trained === "true" || req.body.trained === true,
@@ -100,12 +111,12 @@ router.patch("/:id", upload.single("image"), async (req, res) => {
         let result = await collection.updateOne(query, updates);
 
         if (result.matchedCount === 0) {
-            return res.status(404).send("Cat not found");
+            return res.status(404).json({ message: "Cat not found" });
         }
-        res.status(200).send(result);
+        res.status(200).json({ message: "Cat updated successfully" });
     } catch (err) {
         console.error("Error updating cat record:", err);
-        res.status(500).send("Error updating cat");
+        res.status(500).json({ message: "Error updating cat" });
     }
 });
 
@@ -116,12 +127,12 @@ router.delete("/:id", async (req, res) => {
         let result = await collection.deleteOne(query);
 
         if (result.deletedCount === 0) {
-            return res.status(404).send("Cat not found");
+            return res.status(404).json({ message: "Cat not found" });
         }
-        res.status(200).send(result);
+        res.status(200).json({ message: "Cat deleted successfully" });
     } catch (err) {
         console.error("Error deleting cat record:", err);
-        res.status(500).send("Error deleting cat");
+        res.status(500).json({ message: "Error deleting cat" });
     }
 });
 

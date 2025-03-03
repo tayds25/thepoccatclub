@@ -68,9 +68,9 @@ export default function AdoptMe() {
             });
 
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            console.log("✅ Cat successfully added/updated!");
+            console.log("Cat successfully added/updated!");
         } catch (error) {
-            console.error("❌ Error adding/updating cat:", error);
+            console.error("Error adding/updating cat:", error);
         } finally {
             setForm({
                 name: "",

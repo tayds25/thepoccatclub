@@ -57,15 +57,16 @@ function Adopt() {
                             <div key={cat._id} className="flex flex-col bg-gray-900 p-4 rounded-lg text-white shadow-lg">
                                 {/* Cat Image */}
                                 {cat.image ? (
-                                     <img 
-                                        src={`http://localhost:5050/uploads/${cat.image}`} 
+                                    <img 
+                                        src={`http://localhost:5050/images/${cat.image}`}  // ✅ Use the new image route
                                         alt={cat.name} 
                                         className="w-full h-48 object-cover rounded-md"
                                         onError={(e) => { e.target.src = "/placeholder.jpg"; }} // Fallback if image not found
                                     />
-                                    ) : (
+                                ) : (
                                     <div className="w-full h-48 bg-gray-700 flex items-center justify-center">No Image</div>
                                 )}
+                                
                                 {/* Cat Details */}
                                 <div className="mt-4">
                                     <h3 className="text-xl font-semibold">{cat.name}</h3>
