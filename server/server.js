@@ -1,19 +1,25 @@
-import express from 'express'
-import cors from 'cors'
-import records from './routes/record.js'
-import users from './routes/user.js'
-import dotenv from 'dotenv'
+import express from 'express';
+import cors from 'cors';
+import users from './routes/user.js';
+import adopt from './routes/adopt.js';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config({ path: './config.env' })
+dotenv.config({ path: './config.env' });
 
-const PORT = process.env.PORT || 5050
-const app = express()
+const PORT = process.env.PORT || 5050;
+const app = express();
 
-app.use(cors())
-app.use(express.json())
-app.use('/record', records)
-app.use('/user', users)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(cors());
+app.use(express.json());
+app.use('/user', users);
+app.use('/adopt', adopt);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)
-})
+    console.log(`Server is running on port ${PORT}`);
+});

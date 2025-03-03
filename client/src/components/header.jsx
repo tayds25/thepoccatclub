@@ -31,16 +31,16 @@ const Header = () => {
                                 <div className="absolute hidden group-hover:block left-0 mt-0 pt-2">
                                     <div className="bg-white p-4 rounded-lg border-2 border-gray-300 shadow-lg">
                                         <Link
-                                            to="/records"
+                                            to="/adoptme"
                                             className="block px-2 py-2 text-gray-500 hover:text-gray-900 whitespace-nowrap"
                                         >
-                                            Record List
+                                            Add Adoption Cat
                                         </Link>
                                         <Link
-                                            to="/create"
+                                            to="/catrecord"
                                             className="block px-2 py-2 text-gray-500 hover:text-gray-900 whitespace-nowrap"
                                         >
-                                            Create Record
+                                            Edit Cat records
                                         </Link>
                                     </div>
                                 </div>

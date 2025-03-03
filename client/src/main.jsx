@@ -16,8 +16,8 @@ import About from "./pages/about.jsx";
 import Account from "./pages/account.jsx";
 
 // Admin Controls
-import Record from "./admin_pages/record.jsx";
-import RecordList from "./admin_pages/recordList.jsx";
+import AdoptMe from "./admin_pages/adoptme.jsx";
+import AdoptMeList from "./admin_pages/adoptmeList.jsx";
 
 
 const router = createBrowserRouter([
@@ -50,16 +50,16 @@ const router = createBrowserRouter([
         element: <Account />,
       },
       {
-        path: "records",
-        element: <RecordList />,
+        path: "adoptme",
+        element: <AdoptMe />,
       },
       {
-        path: "create",
-        element: <Record />,
+        path: "catrecord",
+        element: <AdoptMeList />,
       },
       {
         path: "edit/:id",
-        element: <Record />,
+        element: <AdoptMe />,
       },
     ],
   },
