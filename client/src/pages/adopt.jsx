@@ -25,9 +25,9 @@ function Adopt() {
         <div className="container mx-auto px-4 py-16">
             <div className="flex min-h-48 justify-between gap-8">
                 <div className="flex w-1/3 flex-col px-5 justify-between">
-                    <div className="flex-col">
+                    <div className="flex flex-col gap-4">
                         <h2 className="font-bold text-2xl">Find your new cat companion!</h2>
-                        <p>Discover our lovely cats looking for a forever home.</p>
+                        <p class="text-xl">Discover our lovely cats looking for a forever home.</p>
                     </div>
 
                     <div className="flex space-x-4">
@@ -57,7 +57,7 @@ function Adopt() {
                             const imageUrl = cat.image ? `http://localhost:5050/uploads/${encodeURIComponent(cat.image)}` : "/placeholder.jpg"; // Fetching image from /images/:filename
 
                             return (
-                                <div key={cat._id} className="flex flex-col bg-gray-900 p-4 rounded-lg text-white shadow-lg">
+                                <div key={cat._id} className="flex flex-col bg-amber-900 p-4 rounded-lg text-white shadow-lg">
                                     {/* Cat Image */}
                                     <img 
                                         src={imageUrl} 
