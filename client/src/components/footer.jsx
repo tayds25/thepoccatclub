@@ -21,7 +21,10 @@ const Footer = () => {
                 <h3 className="text-lg font-semibold mb-2">
                     Contact Us
                 </h3>
-                <p>Telephone: 1234-5678</p>
+                <p>MARIE ANGELIQUE T. GELVEZON, RND, MD, MBA</p>
+                <p>General Psychiatry</p>
+                <p>Clinic Coordinator (Francine) - 09178212537</p>
+                <p>angelique.gelvezon@gmail.com</p>
                 </div>
             </div>
             </div>
