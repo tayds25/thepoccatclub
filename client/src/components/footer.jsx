@@ -14,6 +14,7 @@ const Footer = () => {
                 <span className="text-lg font-semibold">
                     POC Cat Club
                 </span>
+                <p>Just a group of healthcare workers trying to do more</p>
                 </div>
 
                 {/* Contact Information */}
