@@ -1,52 +1,102 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 
-{/* pic placeholder */}
-const cards=[
-    {id:1, content: 'card1', link: '/logo.png'},  
-    {id:2, content: 'card2', link: '/logo.png'},
-    {id:3, content: 'card3', link: '/logo.png'},
-    {id:4, content: 'card4', link: '/logo.png'},
-    {id:5, content: 'card5', link: '/logo.png'},
-    {id:6, content: 'card6', link: '/logo.png'},
-]
+const cards = [
+    {id: 1, content: 'card1', link: '/logo.png'},  
+    {id: 2, content: 'card2', link: '/logo.png'},
+    {id: 3, content: 'card3', link: '/logo.png'},
+    {id: 4, content: 'card4', link: '/logo.png'},
+    {id: 5, content: 'card5', link: '/logo.png'},
+    {id: 6, content: 'card6', link: '/logo.png'},
+];
 
-const Carousel= () => {
-    const [StartIndex, SetStartIndex] = useState(0);
+const Carousel = () => {
+    const [startIndex, setStartIndex] = useState(0);
+    const [isAnimating, setIsAnimating] = useState(false);
     const cardShow = 3;
-
+    
     const handlePrevious = () => {
-        SetStartIndex ((prev) => Math.max (0, prev - 1))
-    }
-
+        if (startIndex > 0 && !isAnimating) {
+            setIsAnimating(true);
+            setStartIndex((prev) => Math.max(0, prev - 1));
+            setTimeout(() => setIsAnimating(false), 500);
+        }
+    };
+    
     const handleNext = () => {
-        SetStartIndex ((prev) => Math.min (cards.length - cardShow, prev + 1))
-    }
-
-    const visibleCards = cards.slice(StartIndex, StartIndex + cardShow)
-
+        if (startIndex < cards.length - cardShow && !isAnimating) {
+            setIsAnimating(true);
+            setStartIndex((prev) => Math.min(cards.length - cardShow, prev + 1));
+            setTimeout(() => setIsAnimating(false), 500);
+        }
+    };
+    
+    const translateValue = `translateX(-${startIndex * (100 / cardShow)}%)`;
+    
     return (
-        <div class="flex relative">
-            <div class="flex flex-row w-full justify-center overflow-hidden gap-8">
-                {visibleCards.map ((card) => (
-                    <div key={card.id} class="flex justify-center place-content-center content-center w-[400px] h-[200px] border bg-black text-white">  {/* bg-black for reference only */}
-                        {card.content}  {/* reference to see if next/previous is working*/}
-                        <img src={card.link}></img>
+        <div className="w-full py-8">
+            
+            <div className="flex items-center justify-center space-x-4 max-w-6xl mx-auto">
+                {/* Left Arrow - Outside */}
+                <button 
+                    onClick={handlePrevious} 
+                    disabled={startIndex === 0} 
+                    className={`flex-shrink-0 transition-all duration-300 ease-in-out ${startIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:scale-110'}`}
+                >
+                    <IoIosArrowBack className="text-5xl" />
+                </button>
+                
+                {/* Carousel */}
+                <div className="relative flex-grow overflow-hidden">
+                    <div 
+                        className="flex transition-transform duration-500 ease-in-out"
+                        style={{
+                            transform: translateValue,
+                            width: `${(cards.length / cardShow) * 100}%`
+                        }}
+                    >
+                        {cards.map((card) => (
+                            <div 
+                                key={card.id} 
+                                className="flex-shrink-0 w-1/3 px-4 transition-all duration-500 ease-in-out transform hover:scale-105"
+                            >
+                                <div className="bg-black text-white h-[150px] flex flex-col justify-center items-center rounded-lg overflow-hidden shadow-lg mx-auto relative">
+                                    <div className="absolute top-2 text-center">{card.content}</div>
+                                    <img 
+                                        src={card.link}
+                                        alt={card.content}
+                                        className="object-contain h-[120px] w-[120px] transition-opacity duration-300 ease-in-out"
+                                    />
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))
-                }
+                </div>
+                
+                {/* Right Arrow - Outside */}
+                <button 
+                    onClick={handleNext} 
+                    disabled={startIndex >= cards.length - cardShow} 
+                    className={`flex-shrink-0 transition-all duration-300 ease-in-out ${startIndex >= cards.length - cardShow ? 'opacity-30 cursor-not-allowed' : 'hover:scale-110'}`}
+                >
+                    <IoIosArrowForward className="text-5xl" />
+                </button>
             </div>
-            <div class="flex w-full justify-between absolute mt-14">
-                <button onClick={handlePrevious} disabled={StartIndex === 0} class="text-6xl hover:scale-150 delay-150 duration-300 ease-in-out">
-                    <IoIosArrowBack />
-                </button>
-                <button onClick={handleNext} disabled={StartIndex >= cards.length - cardShow} class="text-6xl hover:scale-150 delay-150 duration-300 ease-in-out">
-                    <IoIosArrowForward />
-                </button>
+            
+            <div className="flex justify-center mt-6 space-x-2">
+                {Array.from({ length: cards.length - cardShow + 1 }).map((_, index) => (
+                    <button
+                        key={index}
+                        className={`h-2 rounded-full transition-all duration-300 ease-in-out ${
+                            index === startIndex ? 'w-6 bg-[#748E63]' : 'w-2 bg-gray-300 hover:bg-gray-400'
+                        }`}
+                        onClick={() => setStartIndex(index)}
+                    ></button>
+                ))}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Carousel
+export default Carousel;
