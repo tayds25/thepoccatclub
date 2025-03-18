@@ -4,6 +4,16 @@ import axios from "axios";
 function Latest() {
   const [announcements, setAnnouncements] = useState([]);
 
+  const ColoredLine = ({ color }) => (
+    <hr
+        style={{
+            color: color,
+            backgroundColor: color,
+            height: 5,
+        }}
+    />
+);
+
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
@@ -20,6 +30,10 @@ function Latest() {
   return (
     <div className="container mx-auto px-4 py-16">
       <h1 className="text-2xl font-bold mb-6">Announcements</h1>
+
+        <br></br>
+        <ColoredLine color="green" />
+        <br></br>
 
       {announcements.length === 0 ? (
         <p>No announcements available.</p>
