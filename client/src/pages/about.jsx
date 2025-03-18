@@ -24,12 +24,16 @@ function About() {
                     <h2 className="text-5xl font-extrabold text-green-600">About the POC Cat Club</h2>
                     <p className="text-xl mt-4">Learn More About Us!</p>
                 </div>
+                <div className="ml-auto">
+                <a href="https://www.instagram.com/thepoccatclub/" target="_blank" rel="noopener noreferrer" >
                 <motion.img 
                     src="logo.png" 
                     alt="Logo" 
                     className="w-64 md:w-80 drop-shadow-lg ml-auto"
                     whileHover={{ scale: 1.05 }}
                 />
+                </a>
+                </div>
             </motion.div>
 
             {/** Section Component **/}
