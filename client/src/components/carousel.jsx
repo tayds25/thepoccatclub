@@ -3,12 +3,12 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 
 const cards = [
-    {id: 1, content: 'card1', link: '/logo.png'},  
-    {id: 2, content: 'card2', link: '/logo.png'},
-    {id: 3, content: 'card3', link: '/logo.png'},
-    {id: 4, content: 'card4', link: '/logo.png'},
-    {id: 5, content: 'card5', link: '/logo.png'},
-    {id: 6, content: 'card6', link: '/logo.png'},
+    {id: 1, content: 'card1', link: '/uploads/cat6.png'},  
+    {id: 2, content: 'card2', link: '/uploads/cat1.png'},
+    {id: 3, content: 'card3', link: '/uploads/cat2.png'},
+    {id: 4, content: 'card4', link: '/uploads/cat3.png'},
+    {id: 5, content: 'card5', link: '/uploads/cat4.png'},
+    {id: 6, content: 'card6', link: '/uploads/cat5.png'},
 ];
 
 const Carousel = () => {
@@ -53,7 +53,7 @@ const Carousel = () => {
                         className="flex transition-transform duration-500 ease-in-out"
                         style={{
                             transform: translateValue,
-                            width: `${(cards.length / cardShow) * 100}%`
+                            
                         }}
                     >
                         {cards.map((card) => (
@@ -61,12 +61,11 @@ const Carousel = () => {
                                 key={card.id} 
                                 className="flex-shrink-0 w-1/3 px-4 transition-all duration-500 ease-in-out transform hover:scale-105"
                             >
-                                <div className="bg-black text-white h-[150px] flex flex-col justify-center items-center rounded-lg overflow-hidden shadow-lg mx-auto relative">
-                                    <div className="absolute top-2 text-center">{card.content}</div>
+                                <div className="text-white h-[300px] flex flex-col justify-center items-center rounded-lg overflow-hidden shadow-lg mx-auto relative">
                                     <img 
                                         src={card.link}
                                         alt={card.content}
-                                        className="object-contain h-[120px] w-[120px] transition-opacity duration-300 ease-in-out"
+                                        className="object-cover h-[300px] btransition-opacity duration-300 ease-in-out"
                                     />
                                 </div>
                             </div>
