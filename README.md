@@ -29,3 +29,15 @@ In this project, the group was tasked to develop a dynamic website for an NGO/ba
 
 A big thank you to the POC Cat Club for letting us create a website for them! Support their page here:
  - [Instagram](https://www.instagram.com/thepoccatclub/)
+
+
+## To run server and MongoDB
+
+    cd server
+    npm start
+
+## To run client
+
+    cd client
+    npm run dev
+

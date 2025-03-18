@@ -49,6 +49,12 @@ const Header = () => {
                                         >
                                             Edit Cat records
                                         </Link>
+                                        <Link
+                                            to="/AnnouncementForm"
+                                            className={`block px-2 py-2 transition duration-300 ease-in-out whitespace-nowrap ${currentPath === '/AnnouncementForm' ? 'bg-[#b3c4b5] text-gray-900 font-semibold' : 'text-gray-500 hover:bg-[#b3c4b5] hover:text-gray-900'}`}
+                                        >
+                                            Announcement Form
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

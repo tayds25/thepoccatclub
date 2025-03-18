@@ -1,6 +1,10 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 import path from "path";
 
+import dotenv from "dotenv";
+dotenv.config();
+
+console.log("MongoDB URI:", process.env.ATLAS_URI); // Debugging line
 
 const URI = process.env.ATLAS_URI || "";
 const client = new MongoClient(URI, {
@@ -10,6 +14,7 @@ const client = new MongoClient(URI, {
         deprecationErrors: true,
     },
 });
+
 
 try {
     // Connect the client to the server
@@ -24,6 +29,7 @@ try {
 // Create connections to databases
 const adoptsDb = client.db("adopt");
 const usersDb = client.db("users");
+const announcementDb = client.db("announcement");
 
 // Export all databases
-export { usersDb, adoptsDb };
+export { usersDb, adoptsDb, announcementDb };
