@@ -21,7 +21,7 @@ function Support() {
 
             <div className="flex flex-wrap justify-center gap-8">
                 {[
-                    { title: "Donate via GCash", src: "uploads/gcashqr.jpg", delay: 0.4 },
+                    { title: "Donate via GCash", src: "uploads/gcashqr.png", delay: 0.4 },
                     { title: "Donate via Bank Transfer", src: "uploads/banktransfer.jpg", delay: 0.4 },
                     { title: "Support Us on Shopee", src: "uploads/shopee.png", delay: 0.8, link: "https://shopee.ph/anngelvezon?uls_trackid=524s6is901qa&utm_content=32HvsaaVcdY3zuxTeFJ2no4marnb" }
                 ].map((item, index) => (
