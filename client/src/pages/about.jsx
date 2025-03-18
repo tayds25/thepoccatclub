@@ -59,7 +59,7 @@ function About() {
                         "At our core, we believe that cats are part of the community and that people should learn to coexist peacefully with them — not just in homes, but in institutions, hospitals, and schools, where they have a rightful place alongside us. We hope for a future where hospitals and other institutions recognize cats as part of the environment rather than a problem to be removed. Instead of rounding them up and displacing them, humane solutions like TNVR can create a balanced, healthier, and more compassionate approach to coexistence.",
                         "We also strongly advocate for spaying and neutering as the most humane and effective way to prevent overpopulation and suffering. Additionally, we encourage people to adopt, not shop, because every stray, abandoned, or overlooked cat deserves a chance at a loving home. The POC Cat Club is built on the dedication of volunteers, rescuers, and animal lovers who believe in making a difference — one cat at a time. If you’d like to support our cause, join our TNVR efforts, adopt a cat, or help us spread awareness, we’d love to hear from you. Collectively, we can build a world where cats are seen, valued, and protected."
                     ], 
-                    delay: 0.16 
+                    delay: 1.2 
                 }
             ].map((section, index) => (
                 <motion.div 
