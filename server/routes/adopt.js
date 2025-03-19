@@ -1,42 +1,12 @@
 import express from "express";
-import multer from "multer";
-import path from "path";
-import fs from "fs";
 import { adoptsDb } from "../db/connection.js";
 import { ObjectId } from "mongodb";
+import { upload, uploadToBlob, deleteFromBlob } from "../utils/blobStorage.js";
 
 const router = express.Router();
 
-// Ensure uploads directory exists
-const uploadDir = "uploads/";
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-}
-
-// Configure multer storage for images
-const storage = multer.diskStorage({
-    destination: uploadDir,
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
-    }
-});
-
-const upload = multer({ storage });
-
 // Reference the `cats` collection in the `adopt` database
 const collection = adoptsDb.collection("cats");
-
-// Route to serve uploaded images
-router.get("/images/:filename", (req, res) => {
-    const { filename } = req.params;
-    const imagePath = path.join(process.cwd(), "uploads", filename);
-
-    if (!fs.existsSync(imagePath)) {
-        return res.status(404).send("Image not found");
-    }
-
-    res.sendFile(imagePath);
-});
 
 // Get all adoptable cats
 router.get("/", async (req, res) => {
@@ -65,9 +35,19 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// Add a new cat for adoption (with image upload)
+// Add a new cat for adoption (with Vercel Blob Storage)
 router.post("/", upload.single("image"), async (req, res) => {
     try {
+        // Upload image to Vercel Blob if provided
+        let imageData = { url: null, pathname: null };
+
+        if (req.file) {
+            imageData = await uploadToBlob(req.file, 'cats');
+            if (!imageData.success) {
+                return res.status(500).json({ message: "Failed to upload image" });
+            }
+        }
+
         let newCat = {
             name: req.body.name,
             age: req.body.age,
@@ -77,7 +57,8 @@ router.post("/", upload.single("image"), async (req, res) => {
             neutered: req.body.neutered === "true" || req.body.neutered === true,
             dewormed: req.body.dewormed === "true" || req.body.dewormed === true,
             vaccinated: req.body.vaccinated === "true" || req.body.vaccinated === true,
-            image: req.file ? req.file.filename : null, // Save image filename
+            image: imageData.url,
+            blobPathname: imageData.pathname,
         };
 
         let result = await collection.insertOne(newCat);
@@ -88,10 +69,17 @@ router.post("/", upload.single("image"), async (req, res) => {
     }
 });
 
-// Update a cat record by ID (with image update)
+// Update a cat record by ID (with Vercel Blob Storage)
 router.patch("/:id", upload.single("image"), async (req, res) => {
     try {
         const query = { _id: new ObjectId(req.params.id) };
+
+        const existingCat = await collection.findOne(query);
+
+        if (!existingCat) {
+            return res.status(404).send("Cat not found");
+        }
+
         const updates = {
             $set: {
                 name: req.body.name,
@@ -105,15 +93,22 @@ router.patch("/:id", upload.single("image"), async (req, res) => {
             },
         };
 
+        // If new image uploaded, update image path and delete old one if exists
         if (req.file) {
-            updates.$set.image = req.file.filename;
+            const imageData = await uploadToBlob(req.file, 'cats');
+
+            if (imageData.success) {
+                updates.$set.image = imageData.url;
+                updates.$set.blobPathname = imageData.pathname;
+
+                // Delete old image from Blob Storage if it exists
+                if (existingCat.blobPathname) {
+                    await deleteFromBlob(existingCat.blobPathname);
+                }
+            }
         }
 
         let result = await collection.updateOne(query, updates);
-
-        if (result.matchedCount === 0) {
-            return res.status(404).send("Cat not found");
-        }
         res.status(200).json(result);
     } catch (err) {
         console.error("Error updating cat record:", err);
@@ -125,11 +120,19 @@ router.patch("/:id", upload.single("image"), async (req, res) => {
 router.delete("/:id", async (req, res) => {
     try {
         const query = { _id: new ObjectId(req.params.id) };
-        let result = await collection.deleteOne(query);
 
-        if (result.deletedCount === 0) {
+        const catToDelete = await collection.findOne(query);
+
+        if (!catToDelete) {
             return res.status(404).send("Cat not found");
         }
+
+        let result = await collection.deleteOne(query);
+
+        if (catToDelete.blobPathname) {
+            await deleteFromBlob(catToDelete.blobPathname);
+        }
+
         res.status(200).json(result);
     } catch (err) {
         console.error("Error deleting cat record:", err);

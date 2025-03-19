@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { fetchData, uploadFile, deleteData, getAssetUrl } from "../utils/api";
 
 const AnnouncementForm = () => {
   const [title, setTitle] = useState("");
@@ -11,8 +11,8 @@ const AnnouncementForm = () => {
   // Fetch Announcements
   const fetchAnnouncements = async () => {
     try {
-      const response = await axios.get("http://localhost:5050/announcement");
-      setAnnouncements(response.data);
+      const data = await fetchData("/announcement");
+      setAnnouncements(data);
     } catch (error) {
       console.error("Error fetching announcements:", error);
     }
@@ -30,23 +30,16 @@ const AnnouncementForm = () => {
     formData.append("title", title);
     formData.append("content", content);
     if (image) {
-      formData.append("image", image); // Append file to FormData
+      formData.append("image", image);
     }
 
     try {
-      const response = await axios.post("http://localhost:5050/announcement", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Set correct content type
-        },
-      });
-
-      if (response.status === 201) {
-        setMessage("✅ Announcement added successfully!");
-        fetchAnnouncements(); // Refresh list
-        setTitle("");
-        setContent("");
-        setImage(null);
-      }
+      await uploadFile("/announcement", formData);
+      setMessage("✅ Announcement added successfully!");
+      fetchAnnouncements();
+      setTitle("");
+      setContent("");
+      setImage(null);
     } catch (error) {
       setMessage("❌ Error adding announcement");
       console.error("Error:", error);
@@ -56,11 +49,9 @@ const AnnouncementForm = () => {
   // Delete Announcement
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:5050/announcement/${id}`);
-      if (response.status === 200) {
-        setMessage("🗑️ Announcement deleted successfully!");
-        fetchAnnouncements();
-      }
+      await deleteData(`/announcement/${id}`);
+      setMessage("🗑️ Announcement deleted successfully!");
+      fetchAnnouncements();
     } catch (error) {
       setMessage("❌ Error deleting announcement");
       console.error("Error deleting:", error);
@@ -111,10 +102,10 @@ const AnnouncementForm = () => {
             <p>{announcement.content}</p>
             {announcement.imageUrl && (
               <img
-                src={`http://localhost:5050${announcement.imageUrl}`}
+                src={getAssetUrl(announcement.imageUrl)}
                 alt="Announcement"
                 className="w-auto max-w-full h-auto mt-2"
-                style={{ maxHeight: "300px" }} // Prevents stretching
+                style={{ maxHeight: "300px" }}
               />
             )}
             <button
