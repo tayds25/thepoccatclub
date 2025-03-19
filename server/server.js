@@ -15,17 +15,30 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.resolve();
 
-app.use(cors());
+// Handle CORS for both development and production
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production'
+        ? 'https://yourdomainname.vercel.app'
+        : 'http://localhost:5173',
+    credentials: true,
+}));
+
 app.use(express.json());
-app.use('/user', users);
-app.use('/adopt', adopt);
-app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
-app.use('/announcement', announcement);
 
-console.log("MongoDB URI:", process.env.ATLAS_URI);
+// API routes with /api prefix for Vercel
+app.use('/api/user', users);
+app.use('/api/adopt', adopt);
+app.use('/api/announcement', announcement);
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// Static uploads folder
+app.use('/uploads', express.static(path.join(path.resolve(), "uploads")));
 
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
 
+// For Vercel deployment
+export default app;
