@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchData, deleteData, getAssetUrl } from "../utils/api";
 
 // Individual Cat Component
 const AdoptMe = (props) => (
     <tr className="border-b transition-colors hover:bg-muted/50">
+        {/* Cat Image */}
         <td className="p-4 align-middle">
             {props.adopt.image && (
-                <img
-                    src={getAssetUrl(`/uploads/${props.adopt.image}`)}
-                    alt={props.adopt.name}
+                <img 
+                    src={`http://localhost:5050/images/${props.adopt.image}`} 
+                    alt={props.adopt.name} 
                     className="h-20 w-20 object-cover rounded"
                 />
             )}
@@ -59,24 +59,29 @@ export default function AdoptMeList() {
     // Fetch records from the database
     useEffect(() => {
         async function getAdopt() {
-            try {
-                const records = await fetchData("/adopt/");
-                setAdopt(records);
-            } catch (error) {
-                console.error("Error fetching cats:", error);
+            const response = await fetch(`http://localhost:5050/adopt/`);
+            if (!response.ok) {
+                console.error(`Error fetching cats: ${response.statusText}`);
+                return;
             }
+            const records = await response.json();
+            setAdopt(records);
         }
         getAdopt();
     }, []);
 
     // Delete a cat record
     async function deleteRecord(id) {
-        try {
-            await deleteData(`/adopt/${id}`);
-            setAdopt(adopt.filter((cat) => cat._id !== id));
-        } catch (error) {
-            console.error("Error deleting cat:", error);
+        const response = await fetch(`http://localhost:5050/adopt/${id}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            console.error(`Error deleting cat: ${response.statusText}`);
+            return;
         }
+
+        setAdopt(adopt.filter((cat) => cat._id !== id));
     }
 
     // Map records into table rows

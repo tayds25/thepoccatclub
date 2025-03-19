@@ -74,44 +74,4 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// Create admin user - protected by secret key
-router.post("/create-admin", async (req, res) => {
-    try {
-        const { adminSecret, email, password, name } = req.body;
-
-        if (adminSecret !== process.env.ADMIN_SECRET_KEY) {
-            return res.status(403).json({ message: "Unauthorized" });
-        }
-
-        const collection = await usersDb.collection("users");
-        const existingUser = await collection.findOne({ email });
-
-        if (existingUser) {
-            return res.status(400).json({ message: "User already exists" });
-        }
-
-        // Hash password
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-        const newAdmin = {
-            name,
-            email,
-            password: hashedPassword,
-            isAdmin: true,
-            createdAt: new Date()
-        };
-
-        const result = await collection.insertOne(newAdmin);
-
-        res.status(201).json({
-            success: true,
-            message: "Admin created successfully"
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Error creating admin" });
-    }
-});
-
 export default router;

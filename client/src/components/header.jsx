@@ -1,34 +1,9 @@
-import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom'
 
 const Header = () => {
     // Get current location to determine active page
     const location = useLocation();
     const currentPath = location.pathname;
-
-    // Admin
-    const [isAdmin, setIsAdmin] = useState(false);
-
-    useEffect(() => {
-        const checkAdminStatus = () => {
-            const storedUser = localStorage.getItem('user');
-            if (storedUser) {
-                const user = JSON.parse(storedUser);
-                setIsAdmin(user.isAdmin === true);
-            } else {
-                setIsAdmin(false);
-            }
-        };
-
-        checkAdminStatus();
-
-        // Listen for storage events (if user logs in/out in another tab)
-        window.addEventListener('storage', checkAdminStatus);
-
-        return () => {
-            window.removeEventListener('storage', checkAdminStatus);
-        };
-    }, []);
 
     // Function to determine if a link is active
     const isActive = (path) => {
@@ -56,36 +31,33 @@ const Header = () => {
                     <div className="flex items-center">
                         <div className="hidden md:flex space-x-8">
                             {/* Admin Controls*/}
-                            {isAdmin && (
-                                <div className="relative group">
-                                    <button className="transition duration-300 ease-in-out pb-2 text-gray-200 hover:text-white">
-                                        Admin
-                                    </button>
-                                    {/* Admin dropdown menu */}
-                                    <div className="absolute hidden group-hover:block left-0 mt-0 pt-2">
-                                        <div className="bg-white p-4 rounded-lg border-2 shadow-lg">
-                                            <Link
-                                                to="/adoptme"
-                                                className={`block px-2 py-2 transition duration-300 ease-in-out whitespace-nowrap ${currentPath === '/adoptme' ? 'bg-[#b3c4b5] text-gray-900 font-semibold' : 'text-gray-500 hover:bg-[#b3c4b5] hover:text-gray-900'}`}
-                                            >
-                                                Add Adoption Cat
-                                            </Link>
-                                            <Link
-                                                to="/catrecord"
-                                                className={`block px-2 py-2 transition duration-300 ease-in-out whitespace-nowrap ${currentPath === '/catrecord' ? 'bg-[#b3c4b5] text-gray-900 font-semibold' : 'text-gray-500 hover:bg-[#b3c4b5] hover:text-gray-900'}`}
-                                            >
-                                                Edit Cat records
-                                            </Link>
-                                            <Link
-                                                to="/AnnouncementForm"
-                                                className={`block px-2 py-2 transition duration-300 ease-in-out whitespace-nowrap ${currentPath === '/AnnouncementForm' ? 'bg-[#b3c4b5] text-gray-900 font-semibold' : 'text-gray-500 hover:bg-[#b3c4b5] hover:text-gray-900'}`}
-                                            >
-                                                Announcement Form
-                                            </Link>
-                                        </div>
+                            <div className="relative group">
+                                <button className={`transition duration-300 ease-in-out pb-2 ${currentPath.includes('/admin') ? 'text-white font-semibold' : 'text-gray-200 hover:text-white'}`}>
+                                    Admin
+                                </button>
+                                <div className="absolute hidden group-hover:block left-0 mt-0 pt-2">
+                                    <div className="bg-white p-4 rounded-lg border-2 shadow-lg">
+                                        <Link
+                                            to="/adoptme"
+                                            className={`block px-2 py-2 transition duration-300 ease-in-out whitespace-nowrap ${currentPath === '/adoptme' ? 'bg-[#b3c4b5] text-gray-900 font-semibold' : 'text-gray-500 hover:bg-[#b3c4b5] hover:text-gray-900'}`}
+                                        >
+                                            Add Adoption Cat
+                                        </Link>
+                                        <Link
+                                            to="/catrecord"
+                                            className={`block px-2 py-2 transition duration-300 ease-in-out whitespace-nowrap ${currentPath === '/catrecord' ? 'bg-[#b3c4b5] text-gray-900 font-semibold' : 'text-gray-500 hover:bg-[#b3c4b5] hover:text-gray-900'}`}
+                                        >
+                                            Edit Cat records
+                                        </Link>
+                                        <Link
+                                            to="/AnnouncementForm"
+                                            className={`block px-2 py-2 transition duration-300 ease-in-out whitespace-nowrap ${currentPath === '/AnnouncementForm' ? 'bg-[#b3c4b5] text-gray-900 font-semibold' : 'text-gray-500 hover:bg-[#b3c4b5] hover:text-gray-900'}`}
+                                        >
+                                            Announcement Form
+                                        </Link>
                                     </div>
                                 </div>
-                            )}
+                            </div>
                             <Link to="/" className={`transition duration-300 ease-in-out ${isActive('/')}`}>
                                 Home
                             </Link>

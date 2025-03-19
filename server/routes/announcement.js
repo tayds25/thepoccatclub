@@ -1,34 +1,40 @@
 import express from "express";
 import { announcementDb } from "../db/connection.js";
+import multer from "multer";
+import path from "path";
 import { ObjectId } from "mongodb";
-import { upload, uploadToBlob, deleteFromBlob } from "../utils/blobStorage.js";
 
 const router = express.Router();
 
-// Create an announcement with an optional media file
-router.post("/", upload.single("image"), async (req, res) => {
+// Configure Multer for image and video storage
+const storage = multer.diskStorage({
+  destination: "uploads/",
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  },
+});
+
+// File filter to allow only images and videos
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/png", "image/gif", "video/mp4", "video/mov", "video/avi"];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Invalid file type. Only images and videos are allowed."), false);
+  }
+};
+
+const upload = multer({ storage, fileFilter });
+
+// Create an announcement with an optional media file (image or video)
+router.post("/", upload.single("media"), async (req, res) => {
   try {
     const { title, content } = req.body;
-
-    // Upload image to Vercel Blob if provided
-    let imageData = { url: null, pathname: null };
-
-    if (req.file) {
-      imageData = await uploadToBlob(req.file, 'announcements');
-      if (!imageData.success) {
-        return res.status(500).json({ message: "Failed to upload image" });
-      }
-    }
+    const mediaUrl = req.file ? `uploads/${req.file.filename}` : null;
 
     const announcementCollection = announcementDb.collection("announcements");
-    const newAnnouncement = {
-      title,
-      content,
-      imageUrl: imageData.url,
-      blobPathname: imageData.pathname,
-      createdAt: new Date()
-    };
-
+    const newAnnouncement = { title, content, mediaUrl, createdAt: new Date() };
+    
     const result = await announcementCollection.insertOne(newAnnouncement);
     res.status(201).json(result);
   } catch (error) {
@@ -49,27 +55,13 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Delete an announcement
+// ToDelete an announcement
 router.delete("/:id", async (req, res) => {
   try {
     const announcementCollection = announcementDb.collection("announcements");
-
-    const announcement = await announcementCollection.findOne({
-      _id: new ObjectId(req.params.id)
-    });
-
-    if (!announcement) {
-      return res.status(404).json({ message: "Announcement not found" });
-    }
-
-    const result = await announcementCollection.deleteOne({
-      _id: new ObjectId(req.params.id)
-    });
+    const result = await announcementCollection.deleteOne({ _id: new ObjectId(req.params.id) });
 
     if (result.deletedCount === 1) {
-      if (announcement.blobPathname) {
-        await deleteFromBlob(announcement.blobPathname);
-      }
       res.json({ message: "Announcement deleted" });
     } else {
       res.status(404).json({ message: "Announcement not found" });

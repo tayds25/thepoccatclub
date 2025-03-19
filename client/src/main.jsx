@@ -16,10 +16,9 @@ import About from "./pages/about.jsx";
 import Account from "./pages/account.jsx";
 
 // Admin Controls
-import AdminRoute from "./admin_pages/adminRoute.jsx";
 import AdoptMe from "./admin_pages/adoptme.jsx";
 import AdoptMeList from "./admin_pages/adoptmeList.jsx";
-import AnnouncementForm from "./admin_pages/announcementForm.jsx";
+import AnnouncementForm from "./admin_pages/AnnouncementForm.jsx";
 
 const router = createBrowserRouter([
   {
@@ -66,28 +65,6 @@ const router = createBrowserRouter([
         path: "announcementForm",
         element: <AnnouncementForm />,
       },
-      // Admin routes - protected
-      {
-        element: <AdminRoute />,
-        children: [
-          {
-            path: "adoptme",
-            element: <AdoptMe />,
-          },
-          {
-            path: "catrecord",
-            element: <AdoptMeList />,
-          },
-          {
-            path: "edit/:id",
-            element: <AdoptMe />,
-          },
-          {
-            path: "announcementForm",
-            element: <AnnouncementForm />,
-          },
-        ]
-      }
     ],
   },
 ]);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchData, getAssetUrl } from "../utils/api";
+import axios from "axios";
 
 function Latest() {
   const [announcements, setAnnouncements] = useState([]);
@@ -7,8 +7,8 @@ function Latest() {
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
-        const data = await fetchData("/announcement");
-        setAnnouncements(data);
+        const response = await axios.get("http://localhost:5050/announcement");
+        setAnnouncements(response.data);
       } catch (error) {
         console.error("Error fetching announcements:", error);
       }
@@ -35,13 +35,13 @@ function Latest() {
 
               {announcement.imageUrl && (
                 <img
-                  src={getAssetUrl(announcement.imageUrl)}
+                  src={`http://localhost:5050${announcement.imageUrl}`}
                   alt="Announcement"
                   className="rounded-lg shadow-sm mt-3"
                   style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    objectFit: "contain"
+                    maxWidth: "100%",   // Prevents the image from overflowing its container
+                    height: "auto",     // Ensures the aspect ratio is maintained
+                    objectFit: "contain" // Prevents stretching or cropping
                   }}
                 />
               )}

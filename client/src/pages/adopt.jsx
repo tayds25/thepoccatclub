@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import AdoptCarousel from "../components/adoptCarousel";
-import { fetchData, getAssetUrl } from "../utils/api";
 
 function Adopt() {
     const [cats, setCats] = useState([]);
@@ -9,7 +8,11 @@ function Adopt() {
     useEffect(() => {
         async function fetchCats() {
             try {
-                const data = await fetchData("/adopt/");
+                const response = await fetch("http://localhost:5050/adopt/");
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
                 setCats(data);
             } catch (error) {
                 console.error("Error fetching cats:", error);
@@ -67,17 +70,18 @@ function Adopt() {
                 {/* Grid of adoptable cats - unchanged */}
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-flow-row gap-4">
                     {cats.length > 0 ? (
-                            cats.map((cat) => {
-                                const imageUrl = cat.image ? getAssetUrl(`/uploads/${encodeURIComponent(cat.image)}`) : "/placeholder.jpg";
+                        cats.map((cat) => {
+                            const imageUrl = cat.image ? `http://localhost:5050/uploads/${encodeURIComponent(cat.image)}` : "/placeholder.jpg";
 
-                                return (
-                                    <div key={cat._id} className="flex flex-col bg-[#a57458] p-4 rounded-lg text-white shadow-lg">
-                                        <img
-                                            src={imageUrl}
-                                            alt={cat.name}
-                                            className="w-full h-48 object-cover rounded-md"
-                                            onError={(e) => { e.target.src = "/placeholder.jpg"; }}
-                                        />
+                            return (
+                                <div key={cat._id} className="flex flex-col bg-[#a57458] p-4 rounded-lg text-white shadow-lg">
+                                    {/* Cat Image */}
+                                    <img
+                                        src={imageUrl}
+                                        alt={cat.name}
+                                        className="w-full h-48 object-cover rounded-md"
+                                        onError={(e) => { e.target.src = "/placeholder.jpg"; }}
+                                    />
 
                                     {/* Cat Details */}
                                     <div className="mt-4">

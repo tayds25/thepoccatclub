@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchData, uploadFile, updateWithFile } from "../utils/api";
 
 export default function AdoptMe() {
     const [form, setForm] = useState({
@@ -23,26 +22,32 @@ export default function AdoptMe() {
             const id = params.id?.toString() || undefined;
             if (!id) return;
             setIsNew(false);
-            try {
-                const record = await fetchData(`/adopt/${id}`);
-                if (record) {
-                    setForm(record);
-                } else {
-                    console.warn(`Cat with ID ${id} not found`);
-                    navigate("/");
-                }
-            } catch (error) {
-                console.error("Error fetching cat data:", error);
+            const response = await fetch(
+                `http://localhost:5050/adopt/${params.id.toString()}`
+            );
+            if (!response.ok) {
+                console.error(`Error fetching cat data: ${response.statusText}`);
+                return;
             }
+            const record = await response.json();
+            if (!record) {
+                console.warn(`Cat with ID ${id} not found`);
+                navigate("/");
+                return;
+            }
+            setForm(record);
         }
         fetchData();
     }, [params.id, navigate]);
 
+    function updateForm(value) {
+        return setForm((prev) => ({ ...prev, ...value }));
+    }
+
     async function onSubmit(e) {
         e.preventDefault();
         const formData = new FormData();
-
-        // Append form fields to FormData
+        
         formData.append("name", form.name);
         formData.append("age", form.age);
         formData.append("trait", form.trait);
@@ -51,19 +56,22 @@ export default function AdoptMe() {
         formData.append("neutered", form.neutered);
         formData.append("dewormed", form.dewormed);
         formData.append("vaccinated", form.vaccinated);
-
+        
         if (form.image) {
             formData.append("image", form.image);
         }
 
         try {
-            if (isNew) {
-                await uploadFile("/adopt", formData);
-            } else {
-                await updateWithFile(`/adopt/${params.id}`, formData);
-            }
+            let response = await fetch("http://localhost:5050/adopt" + (isNew ? "" : `/${params.id}`), {
+                method: isNew ? "POST" : "PATCH",
+                body: formData,
+            });
 
-            // Reset form and navigate
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            console.log("Cat successfully added/updated!");
+        } catch (error) {
+            console.error("Error adding/updating cat:", error);
+        } finally {
             setForm({
                 name: "",
                 age: "",
@@ -76,8 +84,6 @@ export default function AdoptMe() {
                 image: null,
             });
             navigate("/");
-        } catch (error) {
-            console.error("Error adding/updating cat:", error);
         }
     }
 
