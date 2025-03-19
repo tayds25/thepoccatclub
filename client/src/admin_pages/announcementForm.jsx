@@ -25,7 +25,7 @@ const AnnouncementForm = () => {
   // Add Announcement
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
@@ -106,15 +106,15 @@ const AnnouncementForm = () => {
       {/* List of Announcements */}
       <div className="mt-6">
         {announcements.map((announcement) => (
-          <div key={announcement._id} className="border p-4 rounded mb-2">
+          <div key={announcement._id} className="border p-4 rounded mb-2 bg-white shadow-md">
             <h3 className="font-bold">{announcement.title}</h3>
             <p>{announcement.content}</p>
             {announcement.imageUrl && (
               <img
-                src={`http://localhost:5050${announcement.imageUrl}`} 
+                src={`http://localhost:5050${announcement.imageUrl}`}
                 alt="Announcement"
                 className="w-auto max-w-full h-auto mt-2"
-                style={{ maxHeight: "300px" }} // Prevents stretching waw
+                style={{ maxHeight: "300px" }} // Prevents stretching
               />
             )}
             <button

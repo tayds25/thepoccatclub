@@ -30,7 +30,7 @@ const Header = () => {
                     {/* Navigation Links */}
                     <div className="flex items-center">
                         <div className="hidden md:flex space-x-8">
-                            {/* Admin Dropdown*/}
+                            {/* Admin Controls*/}
                             <div className="relative group">
                                 <button className={`transition duration-300 ease-in-out pb-2 ${currentPath.includes('/admin') ? 'text-white font-semibold' : 'text-gray-200 hover:text-white'}`}>
                                     Admin
