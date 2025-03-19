@@ -3,12 +3,12 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 
 const cards = [
-    {id: 1, content: 'card1', link: './src/assets/cat6.png'},
-    {id: 2, content: 'card2', link: './src/assets/cat1.png'},
-    {id: 3, content: 'card3', link: './src/assets/cat2.png'},
-    {id: 4, content: 'card4', link: './src/assets/cat3.png'},
-    {id: 5, content: 'card5', link: './src/assets/cat4.png'},
-    {id: 6, content: 'card6', link: './src/assets/cat5.png'},
+    {id: 1, content: 'card1', link: '/assets/cat6.png'},
+    {id: 2, content: 'card2', link: '/assets/cat1.png'},
+    {id: 3, content: 'card3', link: '/assets/cat2.png'},
+    {id: 4, content: 'card4', link: '/assets/cat3.png'},
+    {id: 5, content: 'card5', link: '/assets/cat4.png'},
+    {id: 6, content: 'card6', link: '/assets/cat5.png'},
 ];
 
 const Carousel = () => {
