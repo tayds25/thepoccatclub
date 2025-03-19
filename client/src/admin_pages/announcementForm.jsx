@@ -11,7 +11,7 @@ const AnnouncementForm = () => {
   // Fetch Announcements
   const fetchAnnouncements = async () => {
     try {
-      const response = await axios.get("http://localhost:5050/announcement");
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/announcement`);
       setAnnouncements(response.data);
     } catch (error) {
       console.error("Error fetching announcements:", error);
@@ -34,7 +34,7 @@ const AnnouncementForm = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5050/announcement", formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/announcement`, formData, {
         headers: {
           "Content-Type": "multipart/form-data", // Set correct content type
         },
@@ -56,7 +56,7 @@ const AnnouncementForm = () => {
   // Delete Announcement
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:5050/announcement/${id}`);
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/announcement/${id}`);
       if (response.status === 200) {
         setMessage("🗑️ Announcement deleted successfully!");
         fetchAnnouncements();
@@ -111,7 +111,7 @@ const AnnouncementForm = () => {
             <p>{announcement.content}</p>
             {announcement.imageUrl && (
               <img
-                src={`http://localhost:5050${announcement.imageUrl}`}
+                src={`${import.meta.env.VITE_API_URL}${announcement.imageUrl}`}
                 alt="Announcement"
                 className="w-auto max-w-full h-auto mt-2"
                 style={{ maxHeight: "300px" }} // Prevents stretching

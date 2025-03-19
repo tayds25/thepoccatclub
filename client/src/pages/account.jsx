@@ -39,8 +39,8 @@ function Account() {
 
         try {
             const url = isLoginMode
-                ? 'http://localhost:5050/user/login'
-                : 'http://localhost:5050/user/register';
+                ? `${import.meta.env.VITE_API_URL}/user/login`
+                : `${import.meta.env.VITE_API_URL}/user/register`;
 
             const response = await fetch(url, {
                 method: 'POST',

@@ -23,7 +23,7 @@ export default function AdoptMe() {
             if (!id) return;
             setIsNew(false);
             const response = await fetch(
-                `http://localhost:5050/adopt/${params.id.toString()}`
+                `${import.meta.env.VITE_API_URL}/adopt/${params.id.toString()}`
             );
             if (!response.ok) {
                 console.error(`Error fetching cat data: ${response.statusText}`);
@@ -47,7 +47,7 @@ export default function AdoptMe() {
     async function onSubmit(e) {
         e.preventDefault();
         const formData = new FormData();
-        
+
         formData.append("name", form.name);
         formData.append("age", form.age);
         formData.append("trait", form.trait);
@@ -56,13 +56,13 @@ export default function AdoptMe() {
         formData.append("neutered", form.neutered);
         formData.append("dewormed", form.dewormed);
         formData.append("vaccinated", form.vaccinated);
-        
+
         if (form.image) {
             formData.append("image", form.image);
         }
 
         try {
-            let response = await fetch("http://localhost:5050/adopt" + (isNew ? "" : `/${params.id}`), {
+            let response = await fetch(`${import.meta.env.VITE_API_URL}/adopt` + (isNew ? "" : `/${params.id}`), {
                 method: isNew ? "POST" : "PATCH",
                 body: formData,
             });

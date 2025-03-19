@@ -8,7 +8,7 @@ function Adopt() {
     useEffect(() => {
         async function fetchCats() {
             try {
-                const response = await fetch("http://localhost:5050/adopt/");
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/adopt/`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -60,7 +60,7 @@ function Adopt() {
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-flow-row gap-4">
                     {cats.length > 0 ? (
                         cats.map((cat) => {
-                            const imageUrl = cat.image ? `http://localhost:5050/uploads/${encodeURIComponent(cat.image)}` : "/placeholder.jpg";
+                            const imageUrl = cat.image ? `${import.meta.env.VITE_API_URL}/uploads/${encodeURIComponent(cat.image)}` : "/placeholder.jpg";
 
                             return (
                                 <div key={cat._id} className="flex flex-col bg-[#a57458] p-4 rounded-lg text-white shadow-lg">

@@ -7,9 +7,9 @@ const AdoptMe = (props) => (
         {/* Cat Image */}
         <td className="p-4 align-middle">
             {props.adopt.image && (
-                <img 
-                    src={`http://localhost:5050/images/${props.adopt.image}`} 
-                    alt={props.adopt.name} 
+                <img
+                    src={`${import.meta.env.VITE_API_URL}/images/${props.adopt.image}`}
+                    alt={props.adopt.name}
                     className="h-20 w-20 object-cover rounded"
                 />
             )}
@@ -59,7 +59,7 @@ export default function AdoptMeList() {
     // Fetch records from the database
     useEffect(() => {
         async function getAdopt() {
-            const response = await fetch(`http://localhost:5050/adopt/`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/adopt/`);
             if (!response.ok) {
                 console.error(`Error fetching cats: ${response.statusText}`);
                 return;
@@ -72,7 +72,7 @@ export default function AdoptMeList() {
 
     // Delete a cat record
     async function deleteRecord(id) {
-        const response = await fetch(`http://localhost:5050/adopt/${id}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/adopt/${id}`, {
             method: "DELETE",
         });
 

@@ -7,7 +7,7 @@ function Latest() {
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
-        const response = await axios.get("http://localhost:5050/announcement");
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/announcement`);
         setAnnouncements(response.data);
       } catch (error) {
         console.error("Error fetching announcements:", error);
@@ -35,7 +35,7 @@ function Latest() {
 
               {announcement.imageUrl && (
                 <img
-                  src={`http://localhost:5050${announcement.imageUrl}`}
+                  src={`${import.meta.env.VITE_API_URL}${announcement.imageUrl}`}
                   alt="Announcement"
                   className="rounded-lg shadow-sm mt-3"
                   style={{
