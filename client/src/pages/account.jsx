@@ -56,19 +56,21 @@ function Account() {
                 throw new Error(data.message || (isLoginMode ? "Login failed" : "Registration failed"));
             }
 
-            // Store user data in localStorage
-            localStorage.setItem('user', JSON.stringify(isLoginMode ? data.user : {
+            // Store user data in localStorage with isAdmin property
+            const userToStore = isLoginMode ? data.user : {
                 _id: data.userId,
                 name: data.name,
-                email: data.email
-            }));
+                email: data.email,
+                isAdmin: data.isAdmin || false
+            };
+
+            localStorage.setItem('user', JSON.stringify(userToStore));
+
+            // Dispatch storage event to notify other components
+            window.dispatchEvent(new Event('storage'));
 
             setIsLoggedIn(true);
-            setUserData(isLoginMode ? data.user : {
-                _id: data.userId,
-                name: data.name,
-                email: data.email
-            });
+            setUserData(userToStore);
 
             // Reset form
             setFormData({
@@ -88,6 +90,9 @@ function Account() {
         localStorage.removeItem('user');
         setIsLoggedIn(false);
         setUserData(null);
+
+        // Dispatch storage event to notify other components that user logged out
+        window.dispatchEvent(new Event('storage'));
     };
 
     // Animation variants
@@ -115,8 +120,8 @@ function Account() {
 
     const formVariants = {
         hidden: { opacity: 0, height: 0 },
-        visible: { 
-            opacity: 1, 
+        visible: {
+            opacity: 1,
             height: "auto",
             transition: {
                 duration: 0.3,
@@ -127,8 +132,8 @@ function Account() {
 
     const inputVariants = {
         hidden: { opacity: 0, x: -20 },
-        visible: { 
-            opacity: 1, 
+        visible: {
+            opacity: 1,
             x: 0,
             transition: { duration: 0.3 }
         }
@@ -136,7 +141,7 @@ function Account() {
 
     const buttonVariants = {
         idle: { scale: 1 },
-        hover: { 
+        hover: {
             scale: 1.05,
             backgroundColor: "#566637",
             transition: { duration: 0.2 }
@@ -147,20 +152,20 @@ function Account() {
     // If user is logged in, show account details
     if (isLoggedIn && userData) {
         return (
-            <motion.div 
+            <motion.div
                 className="container mx-auto px-4 py-16"
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 variants={pageVariants}
             >
-                <motion.div 
+                <motion.div
                     className="max-w-lg mx-auto bg-white rounded-lg shadow-lg overflow-hidden"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <motion.div 
+                    <motion.div
                         className="bg-[#A5B68D] p-6"
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -170,14 +175,14 @@ function Account() {
                     </motion.div>
 
                     <div className="p-6">
-                        <motion.div 
+                        <motion.div
                             className="mb-6"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.4, duration: 0.5 }}
                         >
                             <h2 className="text-xl font-semibold mb-4">Account Details</h2>
-                            <motion.div 
+                            <motion.div
                                 className="border-b pb-2 mb-2"
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -186,7 +191,7 @@ function Account() {
                                 <span className="text-gray-600">Name:</span>
                                 <span className="font-medium ml-2">{userData.name}</span>
                             </motion.div>
-                            <motion.div 
+                            <motion.div
                                 className="border-b pb-2 mb-2"
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -195,6 +200,17 @@ function Account() {
                                 <span className="text-gray-600">Email:</span>
                                 <span className="font-medium ml-2">{userData.email}</span>
                             </motion.div>
+                            {userData.isAdmin && (
+                                <motion.div
+                                    className="border-b pb-2 mb-2"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.7, duration: 0.4 }}
+                                >
+                                    <span className="text-gray-600">Role:</span>
+                                    <span className="font-medium ml-2 text-green-700">Administrator</span>
+                                </motion.div>
+                            )}
                         </motion.div>
 
                         <motion.button
@@ -215,7 +231,7 @@ function Account() {
 
     // If not logged in, show login/register form
     return (
-        <motion.div 
+        <motion.div
             className="flex flex-col md:flex-row min-h-[calc(100vh-140px)]"
             initial="initial"
             animate="animate"
@@ -223,8 +239,8 @@ function Account() {
             variants={pageVariants}
         >
             {/* Left side - Image */}
-            <motion.div 
-                className="hidden md:block md:w-1/2 bg-cover bg-center" 
+            <motion.div
+                className="hidden md:block md:w-1/2 bg-cover bg-center"
                 style={{backgroundImage: `url(${accountImg})`}}
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -233,7 +249,7 @@ function Account() {
             </motion.div>
 
             {/* Right side - Form */}
-            <motion.div 
+            <motion.div
                 className="w-full md:w-1/2 flex flex-col items-center justify-center px-6 py-8 bg-[#FFFDF0]"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -241,13 +257,13 @@ function Account() {
             >
                 <div className="w-full max-w-md">
                     {/* Form Header with Toggle */}
-                    <motion.div 
+                    <motion.div
                         className="flex flex-col items-center mb-6"
                         initial={{ opacity: 0, y: -30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
                     >
-                        <motion.h2 
+                        <motion.h2
                             className="text-3xl font-bold text-[#687c57] mb-4"
                             layout
                         >
@@ -274,7 +290,7 @@ function Account() {
                     {/* Error Display */}
                     <AnimatePresence>
                         {error && (
-                            <motion.div 
+                            <motion.div
                                 className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-sm"
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
@@ -287,14 +303,14 @@ function Account() {
                     </AnimatePresence>
 
                     {/* Form */}
-                    <motion.form 
-                        onSubmit={handleSubmit} 
+                    <motion.form
+                        onSubmit={handleSubmit}
                         className="bg-white shadow-xl rounded-lg overflow-hidden border border-[#A5B68D]"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
                     >
-                        <motion.div 
+                        <motion.div
                             className="px-8 py-6"
                             variants={formVariants}
                             initial="hidden"
@@ -303,7 +319,7 @@ function Account() {
                             {/* Name field - only show in register mode */}
                             <AnimatePresence>
                                 {!isLoginMode && (
-                                    <motion.div 
+                                    <motion.div
                                         className="mb-4"
                                         variants={inputVariants}
                                         initial="hidden"
@@ -330,7 +346,7 @@ function Account() {
                                 )}
                             </AnimatePresence>
 
-                            <motion.div 
+                            <motion.div
                                 className="mb-4"
                                 variants={inputVariants}
                             >
@@ -352,7 +368,7 @@ function Account() {
                                 />
                             </motion.div>
 
-                            <motion.div 
+                            <motion.div
                                 className="mb-6"
                                 variants={inputVariants}
                             >

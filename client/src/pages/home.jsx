@@ -1,5 +1,6 @@
 import Carousel from "../components/carousel";
-
+import totebagImg from "../assets/totebag.png";
+import announcementImg from "../assets/announce.png";
 
 function Home() {
 
@@ -7,7 +8,7 @@ function Home() {
         <div className="container mx-auto px-4 py-16">
             <div className="flex min-h-48 gap-8">
                 <div className="flex w-1/2 h-80 px-8 place-content-center ml-20">
-                    <img className="rounded-md w-full object-cover" src="/uploads/totebag.png"></img>
+                    <img className="rounded-md w-full object-cover" src={totebagImg}></img>
                 </div>
                 <div className="flex w-1/3 flex-col px-5 justify-between">
                     <div className="flex flex-col gap-4">
@@ -26,9 +27,9 @@ function Home() {
 
             <div className="flex min-h-48 gap-8 py-16 mt-12">
                 <div className="flex w-1/2 h-full px-8 place-content-center ml-20 ">
-                    <img className="rounded-md w-full object-cover" src="/uploads/announce.png"></img>
+                    <img className="rounded-md w-full object-cover" src={announcementImg}></img>
                 </div>
-                
+
                 <div className="flex w-1/3 flex-col px-5 justify-between">
                     <div className="flex flex-col gap-4">
                         <h2 className="font-bold text-4xl text-center">Announcements</h2>

@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import App from "./App";
 import "./index.css";
+import AdminRoute from "./admin_pages/adminRoute.jsx";
 
 // Website Pages
 import Home from "./pages/home.jsx";
@@ -51,19 +52,19 @@ const router = createBrowserRouter([
       },
       {
         path: "adoptme",
-        element: <AdoptMe />,
+        element: <AdminRoute><AdoptMe /></AdminRoute>,
       },
       {
         path: "catrecord",
-        element: <AdoptMeList />,
+        element: <AdminRoute><AdoptMeList /></AdminRoute>,
       },
       {
         path: "edit/:id",
-        element: <AdoptMe />,
+        element: <AdminRoute><AdoptMe /></AdminRoute>,
       },
       {
         path: "announcementForm",
-        element: <AnnouncementForm />,
+        element: <AdminRoute><AnnouncementForm /></AdminRoute>,
       },
     ],
   },

@@ -54,17 +54,6 @@ function Adopt() {
             <div className="flex flex-col place-content-center mt-24">
                 <div className="flex flex-col w-full place-content-center mb-10 text-center">
                     <h2 className="font-bold text-4xl">Take a look at our Cats!</h2>
-                    <p className="mt-4 text-xl max-w-3xl mx-auto text-gray-700">
-                        Each cat below is looking for their forever home. We've carefully assessed their
-                        personalities, health status, and needs to help you find your perfect match.
-                        Browse our selection of adorable felines - from playful kittens to dignified seniors,
-                        all deserving of loving families. Click on any cat to learn more about their story.
-                    </p>
-                    <p className="mt-2 text-lg max-w-2xl mx-auto text-gray-600">
-                        Our adoption process is simple and supportive, designed to create successful
-                        matches between cats and their new families. All our cats are health-checked
-                        and ready for their next adventure with you!
-                    </p>
                 </div>
 
                 {/* Grid of adoptable cats - unchanged */}

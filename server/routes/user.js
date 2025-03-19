@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
             name: req.body.name,
             email: req.body.email,
             password: hashedPassword,
-            isAdmin: false, // Default to regular user
+            isAdmin: false,
             createdAt: new Date()
         };
 
@@ -71,6 +71,64 @@ router.post("/login", async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Error during login" });
+    }
+});
+
+router.patch("/set-admin", async (req, res) => {
+    try {
+        const { email, adminSecret } = req.body;
+
+        // Verify the admin secret matches
+        if (adminSecret !== process.env.ADMIN_SECRET) {
+            return res.status(403).json({ message: "Invalid admin secret key" });
+        }
+
+        // Find and update the user
+        const collection = await usersDb.collection("users");
+        const result = await collection.updateOne(
+            { email },
+            { $set: { isAdmin: true } }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (result.modifiedCount === 0) {
+            return res.status(200).json({ message: "User is already an admin" });
+        }
+
+        res.status(200).json({ message: "User is now an admin" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error updating admin status" });
+    }
+});
+
+router.patch("/remove-admin", async (req, res) => {
+    try {
+        const { email, adminSecret } = req.body;
+
+        // Verify the admin secret matches
+        if (adminSecret !== process.env.ADMIN_SECRET) {
+            return res.status(403).json({ message: "Invalid admin secret key" });
+        }
+
+        // Find and update the user
+        const collection = await usersDb.collection("users");
+        const result = await collection.updateOne(
+            { email },
+            { $set: { isAdmin: false } }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ message: "Admin status removed" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error updating admin status" });
     }
 });
 
