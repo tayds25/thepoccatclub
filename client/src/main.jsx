@@ -19,7 +19,7 @@ import Account from "./pages/account.jsx";
 // Admin Controls
 import AdoptMe from "./admin_pages/adoptme.jsx";
 import AdoptMeList from "./admin_pages/adoptmeList.jsx";
-import AnnouncementForm from "./admin_pages/AnnouncementForm.jsx";
+import AnnouncementForm from "./admin_pages/announcementForm.jsx";
 
 const router = createBrowserRouter([
   {
