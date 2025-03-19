@@ -43,6 +43,12 @@ app.use('/user', users);
 app.use('/adopt', adopt);
 app.use('/announcement', announcement);
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Internal Server Error' });
+});
+
 // For local development
 if (process.env.NODE_ENV !== 'production') {
     const PORT = process.env.PORT || 5050;
