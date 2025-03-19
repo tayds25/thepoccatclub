@@ -3,12 +3,12 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 
 const adoptCards = [
-    {id: 1, content: 'Adoption 1', link: './assets/adopt1.jpg'},
-    {id: 2, content: 'Adoption 2', link: './assets/adopt2.jpg'},
-    {id: 3, content: 'Adoption 3', link: './assets/adopt3.jpg'},
-    {id: 4, content: 'Adoption 4', link: './assets/adopt4.jpg'},
-    {id: 5, content: 'Adoption 5', link: './assets/adopt5.jpg'},
-    {id: 6, content: 'Adoption 6', link: './assets/adopt6.jpg'},
+    {id: 1, content: 'Adoption 1', link: '/adopt1.jpg'},
+    {id: 2, content: 'Adoption 2', link: '/adopt2.jpg'},
+    {id: 3, content: 'Adoption 3', link: '/adopt3.jpg'},
+    {id: 4, content: 'Adoption 4', link: '/adopt4.jpg'},
+    {id: 5, content: 'Adoption 5', link: '/adopt5.jpg'},
+    {id: 6, content: 'Adoption 6', link: '/adopt6.jpg'},
 ];
 
 const AdoptCarousel = () => {
