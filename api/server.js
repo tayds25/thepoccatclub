@@ -6,7 +6,7 @@ import announcement from "../server/routes/announcement.js";
 import dotenv from 'dotenv';
 import { MongoClient, ServerApiVersion } from "mongodb";
 
-dotenv.config();
+dotenv.config({ path: '../server/config.env' });
 
 // Initialize MongoDB connection
 const URI = process.env.ATLAS_URI || "";

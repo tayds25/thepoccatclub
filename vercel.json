@@ -11,15 +11,11 @@
             "source": "/(.*)",
             "destination": "/"
         }
-        ],
-        "functions": {
+    ],
+    "functions": {
         "api/server.js": {
             "memory": 1024,
             "maxDuration": 10
         }
-        },
-        "env": {
-        "ATLAS_URI": "@atlas_uri",
-        "ADMIN_SECRET": "@admin_secret"
-        }
+    }
 }
