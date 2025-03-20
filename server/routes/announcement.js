@@ -1,5 +1,5 @@
 import express from "express";
-import { announcementDb } from "../db/connection.js";
+import { getAnnouncementCollection } from "../db/connection.js";
 import multer from "multer";
 import path from "path";
 import { ObjectId } from "mongodb";
@@ -27,15 +27,15 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 // Create an announcement with an optional media file (image or video)
-router.post("/", upload.single("media"), async (req, res) => {
+router.post("/", upload.single("image"), async (req, res) => {
   try {
     const { title, content } = req.body;
     const mediaUrl = req.file ? `uploads/${req.file.filename}` : null;
 
-    const announcementCollection = announcementDb.collection("announcements");
+    const collection = await getAnnouncementCollection();
     const newAnnouncement = { title, content, mediaUrl, createdAt: new Date() };
-    
-    const result = await announcementCollection.insertOne(newAnnouncement);
+
+    const result = await collection.insertOne(newAnnouncement);
     res.status(201).json(result);
   } catch (error) {
     console.error("Error adding announcement:", error);
@@ -46,8 +46,8 @@ router.post("/", upload.single("media"), async (req, res) => {
 // Get all announcements
 router.get("/", async (req, res) => {
   try {
-    const announcementCollection = announcementDb.collection("announcements");
-    const announcements = await announcementCollection.find().toArray();
+    const collection = await getAnnouncementCollection();
+    const announcements = await collection.find().toArray();
     res.json(announcements);
   } catch (error) {
     console.error("Error fetching announcements:", error);
@@ -55,11 +55,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ToDelete an announcement
+// Delete an announcement
 router.delete("/:id", async (req, res) => {
   try {
-    const announcementCollection = announcementDb.collection("announcements");
-    const result = await announcementCollection.deleteOne({ _id: new ObjectId(req.params.id) });
+    const collection = await getAnnouncementCollection();
+    const result = await collection.deleteOne({ _id: new ObjectId(req.params.id) });
 
     if (result.deletedCount === 1) {
       res.json({ message: "Announcement deleted" });

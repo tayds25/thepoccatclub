@@ -111,10 +111,10 @@ const AnnouncementForm = () => {
             <p>{announcement.content}</p>
             {announcement.imageUrl && (
               <img
-                src={`${import.meta.env.VITE_API_URL}${announcement.imageUrl}`}
+                src={`${import.meta.env.VITE_API_URL}/uploads/${announcement.imageUrl}`}
                 alt="Announcement"
                 className="w-auto max-w-full h-auto mt-2"
-                style={{ maxHeight: "300px" }} // Prevents stretching
+                style={{ maxHeight: "300px" }}
               />
             )}
             <button

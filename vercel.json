@@ -3,17 +3,21 @@
     "buildCommand": "cd client && npm install && npm run build",
     "outputDirectory": "client/dist",
     "rewrites": [
-        {
-            "source": "/api/(.*)",
-            "destination": "/api/server.js"
-        },
-        {
-            "source": "/(.*)",
-            "destination": "/"
-        }
+        { "source": "/api/user/login", "destination": "/api/user/login" },
+        { "source": "/api/user/register", "destination": "/api/user/register" },
+        { "source": "/api/user/set-admin", "destination": "/api/user/set-admin" },
+        { "source": "/api/user/remove-admin", "destination": "/api/user/remove-admin" },
+        { "source": "/api/adopt", "destination": "/api/adopt/index" },
+        { "source": "/api/adopt/:id", "destination": "/api/adopt/[id]" },
+        { "source": "/api/announcement", "destination": "/api/announcement/index" },
+        { "source": "/api/announcement/:id", "destination": "/api/announcement/[id]" },
+        { "source": "/api/uploads/:filename", "destination": "/api/uploads/[filename]" },
+        { "source": "/api/health", "destination": "/api/health" },
+        { "source": "/api/health/db", "destination": "/api/health/db" },
+        { "source": "/(.*)", "destination": "/" }
     ],
     "functions": {
-        "api/server.js": {
+        "api/**/*.js": {
             "memory": 1024,
             "maxDuration": 10
         }

@@ -35,7 +35,7 @@ function Latest() {
 
               {announcement.imageUrl && (
                 <img
-                  src={`${import.meta.env.VITE_API_URL}${announcement.imageUrl}`}
+                  src={`${import.meta.env.VITE_API_URL}/uploads/${announcement.imageUrl}`}
                   alt="Announcement"
                   className="rounded-lg shadow-sm mt-3"
                   style={{

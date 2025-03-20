@@ -8,7 +8,7 @@ const AdoptMe = (props) => (
         <td className="p-4 align-middle">
             {props.adopt.image && (
                 <img
-                    src={`${import.meta.env.VITE_API_URL}/images/${props.adopt.image}`}
+                    src={`${import.meta.env.VITE_API_URL}/uploads/${props.adopt.image}`}
                     alt={props.adopt.name}
                     className="h-20 w-20 object-cover rounded"
                 />

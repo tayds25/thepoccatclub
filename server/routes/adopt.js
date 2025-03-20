@@ -2,7 +2,7 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { adoptsDb } from "../db/connection.js";
+import { getAdoptsCollection } from "../db/connection.js";
 import { ObjectId } from "mongodb";
 
 const router = express.Router();
@@ -23,9 +23,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Reference the `cats` collection in the `adopt` database
-const collection = adoptsDb.collection("cats");
-
 // Route to serve uploaded images
 router.get("/images/:filename", (req, res) => {
     const { filename } = req.params;
@@ -41,7 +38,8 @@ router.get("/images/:filename", (req, res) => {
 // Get all adoptable cats
 router.get("/", async (req, res) => {
     try {
-        let results = await collection.find({}).toArray();
+        const collection = await getAdoptsCollection();
+        const results = await collection.find({}).toArray();
         res.status(200).json(results);
     } catch (err) {
         console.error("Error fetching cats:", err);
@@ -52,8 +50,9 @@ router.get("/", async (req, res) => {
 // Get a single cat record by ID
 router.get("/:id", async (req, res) => {
     try {
-        let query = { _id: new ObjectId(req.params.id) };
-        let result = await collection.findOne(query);
+        const collection = await getAdoptsCollection();
+        const query = { _id: new ObjectId(req.params.id) };
+        const result = await collection.findOne(query);
 
         if (!result) {
             return res.status(404).send("Cat not found");
@@ -68,7 +67,8 @@ router.get("/:id", async (req, res) => {
 // Add a new cat for adoption (with image upload)
 router.post("/", upload.single("image"), async (req, res) => {
     try {
-        let newCat = {
+        const collection = await getAdoptsCollection();
+        const newCat = {
             name: req.body.name,
             age: req.body.age,
             trait: req.body.trait,
@@ -80,7 +80,7 @@ router.post("/", upload.single("image"), async (req, res) => {
             image: req.file ? req.file.filename : null, // Save image filename
         };
 
-        let result = await collection.insertOne(newCat);
+        const result = await collection.insertOne(newCat);
         res.status(201).json(result);
     } catch (err) {
         console.error("Error adding new cat:", err);
@@ -91,6 +91,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 // Update a cat record by ID (with image update)
 router.patch("/:id", upload.single("image"), async (req, res) => {
     try {
+        const collection = await getAdoptsCollection();
         const query = { _id: new ObjectId(req.params.id) };
         const updates = {
             $set: {
@@ -109,7 +110,7 @@ router.patch("/:id", upload.single("image"), async (req, res) => {
             updates.$set.image = req.file.filename;
         }
 
-        let result = await collection.updateOne(query, updates);
+        const result = await collection.updateOne(query, updates);
 
         if (result.matchedCount === 0) {
             return res.status(404).send("Cat not found");
@@ -124,8 +125,9 @@ router.patch("/:id", upload.single("image"), async (req, res) => {
 // Delete a cat record by ID
 router.delete("/:id", async (req, res) => {
     try {
+        const collection = await getAdoptsCollection();
         const query = { _id: new ObjectId(req.params.id) };
-        let result = await collection.deleteOne(query);
+        const result = await collection.deleteOne(query);
 
         if (result.deletedCount === 0) {
             return res.status(404).send("Cat not found");

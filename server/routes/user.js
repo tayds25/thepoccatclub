@@ -1,5 +1,5 @@
 import express from "express";
-import { usersDb } from "../db/connection.js";
+import { getUsersCollection } from "../db/connection.js";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcryptjs";
 
@@ -8,8 +8,8 @@ const router = express.Router();
 // Register new user
 router.post("/register", async (req, res) => {
     try {
-        // Check if user already exists
-        let collection = await usersDb.collection("users");
+        // Get collection using connection pooling
+        const collection = await getUsersCollection();
         const existingUser = await collection.findOne({ email: req.body.email });
 
         if (existingUser) {
@@ -47,8 +47,8 @@ router.post("/register", async (req, res) => {
 // Login route
 router.post("/login", async (req, res) => {
     try {
-        // Find user by email
-        const collection = await usersDb.collection("users");
+        // Get collection using connection pooling
+        const collection = await getUsersCollection();
         const user = await collection.findOne({ email: req.body.email });
 
         if (!user) {
@@ -74,17 +74,25 @@ router.post("/login", async (req, res) => {
     }
 });
 
+// Update admin routes similarly
 router.patch("/set-admin", async (req, res) => {
     try {
         const { email, adminSecret } = req.body;
 
+        // Get admin secret from environment variables
+        const adminSecretKey = process.env.ADMIN_SECRET;
+        if (!adminSecretKey) {
+            console.error("ADMIN_SECRET environment variable not set");
+            return res.status(500).json({ message: "Server configuration error" });
+        }
+
         // Verify the admin secret matches
-        if (adminSecret !== process.env.ADMIN_SECRET) {
+        if (adminSecret !== adminSecretKey) {
             return res.status(403).json({ message: "Invalid admin secret key" });
         }
 
-        // Find and update the user
-        const collection = await usersDb.collection("users");
+        // Get collection using connection pooling
+        const collection = await getUsersCollection();
         const result = await collection.updateOne(
             { email },
             { $set: { isAdmin: true } }
@@ -109,13 +117,20 @@ router.patch("/remove-admin", async (req, res) => {
     try {
         const { email, adminSecret } = req.body;
 
+        // Get admin secret from environment variables
+        const adminSecretKey = process.env.ADMIN_SECRET;
+        if (!adminSecretKey) {
+            console.error("ADMIN_SECRET environment variable not set");
+            return res.status(500).json({ message: "Server configuration error" });
+        }
+
         // Verify the admin secret matches
-        if (adminSecret !== process.env.ADMIN_SECRET) {
+        if (adminSecret !== adminSecretKey) {
             return res.status(403).json({ message: "Invalid admin secret key" });
         }
 
-        // Find and update the user
-        const collection = await usersDb.collection("users");
+        // Get collection using connection pooling
+        const collection = await getUsersCollection();
         const result = await collection.updateOne(
             { email },
             { $set: { isAdmin: false } }

@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Node.js, Express, and MongoDB REST CRUD API",
   "type": "module",
-  "main": "server.js",
+  "main": "../api/server.js",
   "scripts": {
-    "start": "node --env-file=config.env server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node --env-file=config.env ../api/server.js",
+    "dev": "node ../api/server.js"
   },
   "keywords": [],
   "author": "",
